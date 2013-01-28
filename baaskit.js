@@ -85,8 +85,11 @@ var BaaSKit = (function () {
 	/** Creates a BaaSKit object. */
     function BaaSKit() {
 
+    	var packageInfo = require ('./package');
+    	var version = packageInfo ['version'];
+
     	libcommander
-			.version ('0.0.1')
+			.version (version)
 			.option ('-p, --port <port>', 'specify the port [3000]', Number, 3000)
 			.option ('-c, --createapp <application name>', 'create a new application')
 			.option ('-d, --deleteapp <application id>', 'delete an application')
