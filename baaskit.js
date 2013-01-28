@@ -30,7 +30,8 @@ var libcommander = require ('commander');
 
 //==============================================================================
 /** BaaSKitServer class
-	A simple wrapper class around the all 'express' lib and route 
+
+	A simple wrapper class around the 'express' lib and all of the route 
 	initialization.
 */
 var BaaSKitServer = (function () {
@@ -74,64 +75,76 @@ var BaaSKitServer = (function () {
 })();
 
 //==============================================================================
-function main()
-{
-	libcommander
-		.version ('0.0.1')
-		.option ('-p, --port <port>', 'specify the port [3000]', Number, 3000)
-		.option ('-c, --createapp <application name>', 'create a new application')
-		.option ('-d, --deleteapp <application id>', 'delete an application')
-		.option ('-l, --listapps', 'list all applications')
-		.option ('-g, --generateclientkey <application id>', 'generate a new application client key')
-		.parse (process.argv);
+/** BaaSKit class
+	
+	The main class that kicks everything off.
+*/
+var BaaSKit = (function () {
 
-	if (libcommander.createapp || libcommander.deleteapp || libcommander.listapps || libcommander.generateclientkey)
-	{
-		var admin = require ('./admin');
-		var baasKitAdmin = new admin.BaaSKitAdmin (true);
+	//==============================================================================
+	/** Creates a BaaSKit object. */
+    function BaaSKit() {
 
-		if (libcommander.createapp && libcommander.createapp.length)
+    	libcommander
+			.version ('0.0.1')
+			.option ('-p, --port <port>', 'specify the port [3000]', Number, 3000)
+			.option ('-c, --createapp <application name>', 'create a new application')
+			.option ('-d, --deleteapp <application id>', 'delete an application')
+			.option ('-l, --listapps', 'list all applications')
+			.option ('-g, --generateclientkey <application id>', 'generate a new application client key')
+			.parse (process.argv);
+
+		if (libcommander.createapp || libcommander.deleteapp || libcommander.listapps || libcommander.generateclientkey)
 		{
-			baasKitAdmin.createApplication (libcommander.createapp, function (error, newApplication) {
+			var admin = require ('./admin');
+			var baasKitAdmin = new admin.BaaSKitAdmin (true);
 
-				console.log (!error ? newApplication : error ['message']);
-				process.exit (error);
-			});
+			if (libcommander.createapp && libcommander.createapp.length)
+			{
+				baasKitAdmin.createApplication (libcommander.createapp, function (error, newApplication) {
+
+					console.log (!error ? newApplication : error ['message']);
+					process.exit (error);
+				});
+			}
+			else if (libcommander.deleteapp && libcommander.deleteapp.length)
+			{
+				baasKitAdmin.deleteApplication (libcommander.deleteapp, function (error) {
+
+					console.log (!error ? "Application deleted successfully." : error ['message']);
+					process.exit (error);
+				});
+			}
+			else if (libcommander.listapps)
+			{
+				baasKitAdmin.listAllApplications (function (error, applicationList) {
+
+					console.log (!error ? applicationList : error ['message']);
+					process.exit (error);
+				});
+			}
+			else if (libcommander.generateclientkey && libcommander.generateclientkey.length)
+			{
+				baasKitAdmin.generateApplicationClientKey (libcommander.generateclientkey, function (error) {
+
+					console.log (!error ? "Application client key generated successfully." : error ['message']);
+					process.exit (error);
+				});
+			}
+			else
+			{
+				process.exit (0);
+			}
 		}
-		else if (libcommander.deleteapp && libcommander.deleteapp.length)
+		else 
 		{
-			baasKitAdmin.deleteApplication (libcommander.deleteapp, function (error) {
-
-				console.log (!error ? "Application deleted successfully." : error ['message']);
-				process.exit (error);
-			});
+			var server = new BaaSKitServer();
+			server.start (libcommander.port);
 		}
-		else if (libcommander.listapps)
-		{
-			baasKitAdmin.listAllApplications (function (error, applicationList) {
+    }
 
-				console.log (!error ? applicationList : error ['message']);
-				process.exit (error);
-			});
-		}
-		else if (libcommander.generateclientkey && libcommander.generateclientkey.length)
-		{
-			baasKitAdmin.generateApplicationClientKey (libcommander.generateclientkey, function (error) {
+    return BaaSKit;
 
-				console.log (!error ? "Application client key generated successfully." : error ['message']);
-				process.exit (error);
-			});
-		}
-		else
-		{
-			process.exit (0);
-		}
-	}
-	else 
-	{
-		var server = new BaaSKitServer();
-		server.start (libcommander.port);
-	}
-}
+})();
 
-main();
+var baasKit = new BaaSKit();
