@@ -1,0 +1,12 @@
+{
+    "name": "BaaSKit",
+    "description": "Backend as a Service Kit",
+    "version": "0.0.1",
+    "private": true,
+    
+    "dependencies": {
+    	"commander": "1.1.1",
+        "express": "3.x",
+        "mongodb": "1.2.x"
+    }
+}
