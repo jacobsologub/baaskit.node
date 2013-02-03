@@ -104,7 +104,7 @@ exports.get = function (request, response) {
 			var appDb = kDatabaseConnection.db (app ['id']);
 			collection = appDb.collection (request.params.collectionName);
 
-			if (request.params.objectId != null)
+			if (request.params.objectId != null && request.params.objectId != 'count')
 			{
 				var object = {
 
@@ -160,27 +160,45 @@ exports.get = function (request, response) {
 					options ['fields'] = {};
 				}
 
-				collection.find (query, options, function (error, items) {
+				if (request.params.objectId == 'count')
+				{
+					collection.count (query, options, function (error, count) {
 
-					if (!error)
-					{
-						items.toArray (function (error, items) {
+						if (!error)
+						{
+							response.send (200, { "count" : count });
+						}
+						else
+						{
+							response.send (500);
+						}
 
-							if (!error)
-							{
-								response.send (200, items);
-							}
-							else
-							{
-								response.send (500);
-							}
-						});
-					}
-					else 
-					{
-						response.send (500);
-					}
-				});
+					});
+				}
+				else
+				{
+					collection.find (query, options, function (error, items) {
+
+						if (!error)
+						{
+							items.toArray (function (error, items) {
+
+								if (!error)
+								{
+									response.send (200, items);
+								}
+								else
+								{
+									response.send (500);
+								}
+							});
+						}
+						else 
+						{
+							response.send (500);
+						}
+					});
+				}
 			}
 		}
 		else
