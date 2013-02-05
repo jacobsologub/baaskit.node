@@ -52,7 +52,9 @@ var AppDbPool = (function () {
 	*/
     function AppDbPool (maxNumberOfApps)
     {
-    	maxNumApps = maxNumberOfApps;
+    	this.maxNumApps = Math.max (maxNumberOfApps, 1);
+    	this.lookup = {};
+    	this.stack = [];
     }
 
     /** Returns a shared database object using the current socket connection. 
@@ -61,32 +63,28 @@ var AppDbPool = (function () {
     */
     AppDbPool.prototype.getDb = function (appId) {
 
-    	if (stack.length >= maxNumApps)
+    	if (this.stack.length >= this.maxNumApps)
 		{
-			var poppedAppId = stack.pop();
-			delete lookup [poppedAppId];
+			var poppedAppId = this.stack.pop();
+			delete this.lookup [poppedAppId];
 		}
 
 		var result = null;
 
-		if (lookup[appId] != null)
+		if (this.lookup[appId] != null)
 		{
-			result = lookup [appId];
+			result = this.lookup [appId];
 		}
 		else
 		{
-			stack.unshift (appId);
+			this.stack.unshift (appId);
 
 			result = kDatabaseConnection.db (appId);
-			lookup[appId] = result;
+			this.lookup[appId] = result;
 		}
 
 		return result;
 	};
-
-	var maxNumApps = 64;
-    var lookup = {};
-	var stack = [];
 
     return AppDbPool;
 

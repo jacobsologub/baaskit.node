@@ -49,7 +49,7 @@ var BaaSKitAdmin = (function () {
 	/** Creates a BaaSKitAdmin object. */
     function BaaSKitAdmin (asksForUserConfirmation_) 
     {
-    	asksForUserConfirmation = asksForUserConfirmation_;
+    	this.asksForUserConfirmation = asksForUserConfirmation_;
     }
 
     //==========================================================================
@@ -240,8 +240,6 @@ var BaaSKitAdmin = (function () {
 			}
 		});
     };
-
-    asksForUserConfirmation = false;
 
     return BaaSKitAdmin;
 })();

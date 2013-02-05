@@ -40,37 +40,37 @@ var BaaSKitServer = (function () {
 	/** Creates a BaaSKitServer object. */
     function BaaSKitServer()
     {
-    	expressApp = libexpress();
+    	this.expressApp = libexpress();
 
-		expressApp.configure (function() {
-			expressApp.set ('title', 'baaskit');
-			expressApp.disable ('x-powered-by');
-			expressApp.use (libexpress.bodyParser());
-		});
+    	// (set settings for all environments)
+		this.expressApp.set ('title', 'baaskit');
+		this.expressApp.disable ('x-powered-by');
+		this.expressApp.use (libexpress.bodyParser());
 
+		// (admin routes)
 		var baasKitAdmin = require ('./routes/admin');
-		expressApp.post ('/applications/:applicationName', baasKitAdmin.createApp);
-		expressApp.post ('/applications/:applicationId/clientkey', baasKitAdmin.generateAppClientKey);
-		expressApp.get ('/applications/:applicationId', baasKitAdmin.getApp);
-		expressApp.get ('/applications', baasKitAdmin.getAllApps);
-		expressApp.delete ('/applications/:applicationId', baasKitAdmin.deleteApp);
+		this.expressApp.post ('/applications/:applicationName', baasKitAdmin.createApp);
+		this.expressApp.post ('/applications/:applicationId/clientkey', baasKitAdmin.generateAppClientKey);
+		this.expressApp.get ('/applications/:applicationId', baasKitAdmin.getApp);
+		this.expressApp.get ('/applications', baasKitAdmin.getAllApps);
+		this.expressApp.delete ('/applications/:applicationId', baasKitAdmin.deleteApp);
 
+		// (data routes)
 		var baasKitData = require ('./routes/data');
-		expressApp.post ('/collections/:collectionName', baasKitData.post);
-		expressApp.get ('/collections/:collectionName/:objectId', baasKitData.get);
-		expressApp.get ('/collections/:collectionName', baasKitData.get);
-		expressApp.put ('/collections/:collectionName/:objectId', baasKitData.put);
-		expressApp.put ('/collections/:collectionName', baasKitData.put);
-		expressApp.delete ('/collections/:collectionName/:objectId', baasKitData.delete);
-		expressApp.delete ('/collections/:collectionName', baasKitData.delete);
+		this.expressApp.post ('/collections/:collectionName', baasKitData.post);
+		this.expressApp.get ('/collections/:collectionName/:objectId', baasKitData.get);
+		this.expressApp.get ('/collections/:collectionName', baasKitData.get);
+		this.expressApp.put ('/collections/:collectionName/:objectId', baasKitData.put);
+		this.expressApp.put ('/collections/:collectionName', baasKitData.put);
+		this.expressApp.delete ('/collections/:collectionName/:objectId', baasKitData.delete);
+		this.expressApp.delete ('/collections/:collectionName', baasKitData.delete);
     }
 
     BaaSKitServer.prototype.start = function (port) {
 
-        expressApp.listen (port);
+        this.expressApp.listen (port);
     }
 
-    var expressApp = null;
     return BaaSKitServer;
 })();
 
