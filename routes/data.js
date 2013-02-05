@@ -40,6 +40,61 @@ kDatabaseConnection.open (function (error, databse) {
 });
 
 //==============================================================================
+/** AppDbPool
+
+	A simple shared database instance object Queue/FIFO list.
+*/
+var AppDbPool = (function () {
+
+	/** Creates an AppDbPool object.
+		@param maxNumberOfApps	The maximum number of shared db objects to keep 
+								arround.
+	*/
+    function AppDbPool (maxNumberOfApps)
+    {
+    	maxNumApps = maxNumberOfApps;
+    }
+
+    /** Returns a shared database object using the current socket connection. 
+    	If the maximum number of db objects to keep around has been reached the 
+    	last item in the list will be popped.
+    */
+    AppDbPool.prototype.getDb = function (appId) {
+
+    	if (stack.length >= maxNumApps)
+		{
+			var poppedAppId = stack.pop();
+			delete lookup [poppedAppId];
+		}
+
+		var result = null;
+
+		if (lookup[appId] != null)
+		{
+			result = lookup [appId];
+		}
+		else
+		{
+			stack.unshift (appId);
+
+			result = kDatabaseConnection.db (appId);
+			lookup[appId] = result;
+		}
+
+		return result;
+	};
+
+	var maxNumApps = 64;
+    var lookup = {};
+	var stack = [];
+
+    return AppDbPool;
+
+})();
+
+var appDbPool = new AppDbPool (64);
+
+//==============================================================================
 /** Creates a new document in the specified collection.
 
 	@param request.params.collectionName	The name of the collection.
@@ -60,7 +115,7 @@ exports.post = function (request, response) {
 
 		if (item != null)
 		{
-			var appDb = kDatabaseConnection.db (app ['id']);
+			var appDb = appDbPool.getDb (app ['id']);
 			collection = appDb.collection (request.params.collectionName);
 
 			collection.insert (request.body, function (error, object) {
@@ -94,14 +149,14 @@ exports.get = function (request, response) {
 	var app = {
 		'id' : request.header ('X-BaaSKit-Application-Id'),
 		'clientKey' : request.header ('X-BaaSKit-Application-Client-Key')
-	};
+	};	
 
 	var collection = kDatabaseConnection.collection ('applications');
 	collection.findOne (app, function (error, item) {
 
 		if (item != null)
 		{
-			var appDb = kDatabaseConnection.db (app ['id']);
+			var appDb = appDbPool.getDb (app ['id']);
 			collection = appDb.collection (request.params.collectionName);
 
 			if (request.params.objectId != null && request.params.objectId != 'count')
@@ -247,7 +302,7 @@ exports.put = function (request, response) {
 
 		if (item != null)
 		{
-			var appDb = kDatabaseConnection.db (app ['id']);
+			var appDb = appDbPool.getDb (app ['id']);
 			collection = appDb.collection (request.params.collectionName);
 
 			var query = null;
@@ -308,7 +363,7 @@ exports.delete = function (request, response) {
 
 		if (item != null)
 		{
-			var appDb = kDatabaseConnection.db (app ['id']);
+			var appDb = appDbPool.getDb (app ['id']);
 			collection = appDb.collection (request.params.collectionName);
 
 			var query = null;
