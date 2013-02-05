@@ -32,7 +32,7 @@ var MongoServer = libmongo.Server;
 var MongoDatabase = libmongo.Db;
 var BSON = libmongo.BSONPure;
 
-var kMongoServer = new MongoServer ('localhost', 27017, { auto_reconnect: true });
+var kMongoServer = new MongoServer ('localhost', 27017, { auto_reconnect : true, poolSize: 32 });
 var kDatabaseConnection = new MongoDatabase ('baaskitdb', kMongoServer, { w : 0 });
 
 kDatabaseConnection.open (function (error, databse) {
