@@ -88,6 +88,7 @@ var BaaSKitAdmin = (function () {
     BaaSKitAdmin.prototype.deleteApplication = function (applicationId, callback) {
 
     	var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
+    	var asksForUserConfirmation = this.asksForUserConfirmation;
 
 		colleciton.findOne ({ 'id' : applicationId }, function (error, item) {
 
@@ -115,7 +116,7 @@ var BaaSKitAdmin = (function () {
 					}
 				};
 
-				if (this.asksForUserConfirmation)
+				if (asksForUserConfirmation)
 				{
 					libcommander.confirm ('Are you sure you want to delete this application? ', function (ok) {
 
@@ -183,6 +184,7 @@ var BaaSKitAdmin = (function () {
     BaaSKitAdmin.prototype.generateApplicationClientKey = function (applicationId, callback) {
 
 		var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
+		var asksForUserConfirmation = this.asksForUserConfirmation;
 		
 		colleciton.findOne ({ 'id' : applicationId }, function (error, item) {
 
@@ -213,7 +215,7 @@ var BaaSKitAdmin = (function () {
 					}
 				};
 
-				if (this.asksForUserConfirmation)
+				if (asksForUserConfirmation)
 				{
 					libcommander.confirm ('Are you sure you want to generate a new client key for this application? ', function (ok) {
 
