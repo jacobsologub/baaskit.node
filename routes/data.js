@@ -24,73 +24,11 @@
   ==============================================================================
 */
 
-var libassert = require ('assert');
 var libmongo = require ('mongodb');
-
-//==============================================================================
-var MongoServer = libmongo.Server;
-var MongoDatabase = libmongo.Db;
 var BSON = libmongo.BSONPure;
 
-var kMongoServer = new MongoServer ('localhost', 27017, { auto_reconnect : true, poolSize: 32 });
-var kDatabaseConnection = new MongoDatabase ('baaskitdb', kMongoServer, { w : 0 });
-
-kDatabaseConnection.open (function (error, databse) {
-  libassert.equal (null, error, 'Could not connect to mongodb.');
-});
-
-//==============================================================================
-/** AppDbPool
-
-	A simple shared database instance object Queue/FIFO list.
-*/
-var AppDbPool = (function () {
-
-	/** Creates an AppDbPool object.
-		@param maxNumberOfApps	The maximum number of shared db objects to keep 
-								arround.
-	*/
-    function AppDbPool (maxNumberOfApps)
-    {
-    	this.maxNumApps = Math.max (maxNumberOfApps, 1);
-    	this.lookup = {};
-    	this.stack = [];
-    }
-
-    /** Returns a shared database object using the current socket connection. 
-    	If the maximum number of db objects to keep around has been reached the 
-    	last item in the list will be popped.
-    */
-    AppDbPool.prototype.getDb = function (appId) {
-
-    	if (this.stack.length >= this.maxNumApps)
-		{
-			var poppedAppId = this.stack.pop();
-			delete this.lookup [poppedAppId];
-		}
-
-		var result = null;
-
-		if (this.lookup[appId] != null)
-		{
-			result = this.lookup [appId];
-		}
-		else
-		{
-			this.stack.unshift (appId);
-
-			result = kDatabaseConnection.db (appId);
-			this.lookup[appId] = result;
-		}
-
-		return result;
-	};
-
-    return AppDbPool;
-
-})();
-
-var appDbPool = new AppDbPool (64);
+var baaskitdb = require ('../baaskitdb');
+var BaaSKitDb = baaskitdb.BaaSKitDb;
 
 //==============================================================================
 /** Creates a new document in the specified collection.
@@ -108,12 +46,12 @@ exports.post = function (request, response) {
 		'clientKey' : request.header ('X-BaaSKit-Application-Client-Key')
 	};
 
-	var collection = kDatabaseConnection.collection ('applications');
+	var collection = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 	collection.findOne (app, function (error, item) {
 
 		if (item != null)
 		{
-			var appDb = appDbPool.getDb (app ['id']);
+			var appDb = BaaSKitDb.getInstance().getAppDb (app ['id']);
 			collection = appDb.collection (request.params.collectionName);
 
 			collection.insert (request.body, function (error, object) {
@@ -149,12 +87,12 @@ exports.get = function (request, response) {
 		'clientKey' : request.header ('X-BaaSKit-Application-Client-Key')
 	};	
 
-	var collection = kDatabaseConnection.collection ('applications');
+	var collection = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 	collection.findOne (app, function (error, item) {
 
 		if (item != null)
 		{
-			var appDb = appDbPool.getDb (app ['id']);
+			var appDb = BaaSKitDb.getInstance().getAppDb (app ['id']);
 			collection = appDb.collection (request.params.collectionName);
 
 			if (request.params.objectId != null && request.params.objectId != 'count')
@@ -295,12 +233,12 @@ exports.put = function (request, response) {
 		'clientKey' : request.header ('X-BaaSKit-Application-Client-Key')
 	};
 
-	var collection = kDatabaseConnection.collection ('applications');
+	var collection = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 	collection.findOne (app, function (error, item) {
 
 		if (item != null)
 		{
-			var appDb = appDbPool.getDb (app ['id']);
+			var appDb = BaaSKitDb.getInstance().getAppDb (app ['id']);
 			collection = appDb.collection (request.params.collectionName);
 
 			var query = null;
@@ -356,12 +294,12 @@ exports.delete = function (request, response) {
 		'clientKey' : request.header ('X-BaaSKit-Application-Client-Key')
 	};
 
-	var collection = kDatabaseConnection.collection ('applications');
+	var collection = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 	collection.findOne (app, function (error, item) {
 
 		if (item != null)
 		{
-			var appDb = appDbPool.getDb (app ['id']);
+			var appDb = BaaSKitDb.getInstance().getAppDb (app ['id']);
 			collection = appDb.collection (request.params.collectionName);
 
 			var query = null;
@@ -392,7 +330,7 @@ exports.delete = function (request, response) {
 			};
 
 			collection.remove (query, options, function (error, result) {
-
+				
 				response.send (!error ? 200 : 500);
 			});
 		}

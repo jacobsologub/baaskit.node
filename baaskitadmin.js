@@ -24,23 +24,13 @@
   ==============================================================================
 */
 
-var libassert = require ('assert');
-var libexpress = require ('express');
-var libcommander = require ('commander');
 var libcrypto = require ('crypto');
+var libcommander = require ('commander');
 var libmongo = require ('mongodb');
-
-//==============================================================================
-var MongoServer = libmongo.Server;
-var MongoDatabase = libmongo.Db;
 var BSON = libmongo.BSONPure;
 
-var kMongoServer = new MongoServer ('localhost', 27017, { auto_reconnect: true });
-var kDatabaseConnection = new MongoDatabase ('baaskitdb', kMongoServer, { w : 0 });
-
-kDatabaseConnection.open (function (error, databse) {
-  libassert.equal (null, error, 'Could not connect to mongodb.');
-});
+var baaskitdb = require ('./baaskitdb');
+var BaaSKitDb = baaskitdb.BaaSKitDb;
 
 //==============================================================================
 var BaaSKitAdmin = (function () {
@@ -60,7 +50,8 @@ var BaaSKitAdmin = (function () {
 	*/
     BaaSKitAdmin.prototype.createApplication = function (applicationName, callback) {
 
-    	var colleciton = kDatabaseConnection.collection ('applications');
+    	var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
+
 		colleciton.findOne ({ 'name' : applicationName }, function (error, item) {
 
 			if (item == null)
@@ -96,7 +87,7 @@ var BaaSKitAdmin = (function () {
 	*/
     BaaSKitAdmin.prototype.deleteApplication = function (applicationId, callback) {
 
-    	var colleciton = kDatabaseConnection.collection ('applications');
+    	var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 
 		colleciton.findOne ({ 'id' : applicationId }, function (error, item) {
 
@@ -148,7 +139,7 @@ var BaaSKitAdmin = (function () {
 	*/
     BaaSKitAdmin.prototype.listAllApplications = function (callback) {
 
-    	var colleciton = kDatabaseConnection.collection ('applications');
+    	var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 
 		colleciton.find ({}, {}, function (error, items) {
 
@@ -171,7 +162,7 @@ var BaaSKitAdmin = (function () {
 	*/
     BaaSKitAdmin.prototype.getApplication = function (applicationId, callback) {
 
-    	var colleciton = kDatabaseConnection.collection ('applications');
+    	var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 
 		colleciton.findOne ({ 'id' : applicationId }, function (error, object) {
 
@@ -191,7 +182,7 @@ var BaaSKitAdmin = (function () {
 	*/
     BaaSKitAdmin.prototype.generateApplicationClientKey = function (applicationId, callback) {
 
-		var colleciton = kDatabaseConnection.collection ('applications');
+		var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 		
 		colleciton.findOne ({ 'id' : applicationId }, function (error, item) {
 
