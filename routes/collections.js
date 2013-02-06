@@ -27,8 +27,7 @@
 var libmongo = require ('mongodb');
 var BSON = libmongo.BSONPure;
 
-var baaskitdb = require ('../baaskitdb');
-var BaaSKitDb = baaskitdb.BaaSKitDb;
+var BaaSKitDb = require ('../db').BaaSKitDb;
 
 //==============================================================================
 /** Creates a new document in the specified collection.

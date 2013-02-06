@@ -24,7 +24,7 @@
   ==============================================================================
 */
 
-var baaskitadmin = require ('../baaskitadmin');
+var baaskitadmin = require ('../admin');
 var kBaaSKitAdmin = new baaskitadmin.BaaSKitAdmin();
 
 //==============================================================================

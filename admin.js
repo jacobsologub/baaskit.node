@@ -29,8 +29,7 @@ var libcommander = require ('commander');
 var libmongo = require ('mongodb');
 var BSON = libmongo.BSONPure;
 
-var baaskitdb = require ('./baaskitdb');
-var BaaSKitDb = baaskitdb.BaaSKitDb;
+var BaaSKitDb = require ('./db').BaaSKitDb;
 
 //==============================================================================
 var BaaSKitAdmin = (function () {

@@ -99,7 +99,7 @@ var BaaSKit = (function () {
 
 		if (libcommander.createapp || libcommander.deleteapp || libcommander.listapps || libcommander.generateclientkey)
 		{
-			var admin = require ('./baaskitadmin');
+			var admin = require ('./admin');
 			var applications = new admin.BaaSKitAdmin (true);
 
 			if (libcommander.createapp && libcommander.createapp.length)
