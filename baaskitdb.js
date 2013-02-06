@@ -32,17 +32,17 @@ var MongoServer = libmongo.Server;
 var MongoDatabase = libmongo.Db;
 
 //==============================================================================
-/** AppDbPool
+/** BaaSKitAppDbPool
 
 	A simple shared database instance object Queue/FIFO list.
 */
-var AppDbPool = (function () {
+var BaaSKitAppDbPool = (function () {
 
-	/** Creates an AppDbPool object.
+	/** Creates an BaaSKitAppDbPool object.
 		@param maxNumberOfApps	The maximum number of shared db objects to keep 
 								arround.
 	*/
-    function AppDbPool (maxNumberOfApps)
+    function BaaSKitAppDbPool (maxNumberOfApps)
     {
     	this.maxNumApps = Math.max (maxNumberOfApps, 1);
     	this.lookup = {};
@@ -53,7 +53,7 @@ var AppDbPool = (function () {
     	If the maximum number of db objects to keep around has been reached the 
     	last item in the list will be popped.
     */
-    AppDbPool.prototype.getDb = function (appId) {
+    BaaSKitAppDbPool.prototype.getDb = function (appId) {
 
     	if (this.stack.length >= this.maxNumApps)
 		{
@@ -78,7 +78,7 @@ var AppDbPool = (function () {
 		return result;
 	};
 
-    return AppDbPool;
+    return BaaSKitAppDbPool;
 
 })();
 
@@ -97,7 +97,7 @@ var BaaSKitDb = (function () {
     {
     	this.mongoServer = new MongoServer ('localhost', 27017, { auto_reconnect : true, poolSize: 32 });
 		this.databaseConnection = new MongoDatabase ('baaskitdb', this.mongoServer, { w : 0 });
-		this.appDbPool = new AppDbPool (64);
+		this.appDbPool = new BaaSKitAppDbPool (64);
 
 		this.databaseConnection.open (function (error, databse) {
 			
@@ -105,21 +105,21 @@ var BaaSKitDb = (function () {
 		});
     }
 
-    BaaSKitDb.prototype.getMainDb = function()
-    {
+    BaaSKitDb.prototype.getMainDb = function() {
+
     	return this.databaseConnection;
     }
 
-    BaaSKitDb.prototype.getAppDb = function (appId)
-    {	
+    BaaSKitDb.prototype.getAppDb = function (appId) {
+
     	var pool = this.appDbPool;
     	return pool.getDb (appId);
     }
 
     var instance = null;
 	return {
-		getInstance: function() {
-
+		getInstance: function() 
+        {
 			if (instance == null)
 			{
 				instance = new BaaSKitDb();
