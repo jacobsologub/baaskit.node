@@ -96,9 +96,20 @@ exports.get = function (request, response) {
 
 			if (request.params.objectId != null && request.params.objectId != 'count')
 			{
+				var objectId = null;
+
+				try
+				{
+					objectId = new BSON.ObjectID (request.params.objectId);
+				}
+				catch (e)
+				{
+					response.send (500);
+				}
+
 				var object = {
 
-					'_id' : new BSON.ObjectID (request.params.objectId)
+					'_id' : objectId
 				};
 
 				collection.findOne (object, function (error, item) {
@@ -244,9 +255,20 @@ exports.put = function (request, response) {
 
 			if (request.params.objectId != null)
 			{
+				var objectId = null;
+
+				try 
+				{
+					objectId = new BSON.ObjectID (request.params.objectId);
+				}
+				catch (e) 
+				{
+					response.send (500);
+				}
+
 				query = {
 
-					'_id' : new BSON.ObjectID (request.params.objectId) 
+					'_id' : objectId 
 				};
 			}
 			else
@@ -305,9 +327,20 @@ exports.delete = function (request, response) {
 
 			if (request.params.objectId != null)
 			{
+				var objectId = null;
+
+				try
+				{
+					objectId = new BSON.ObjectID (request.params.objectId);
+				}
+				catch (e)
+				{
+					response.send (500);
+				}
+
 				query = {
 
-					'_id' : new BSON.ObjectID (request.params.objectId) 
+					'_id' : objectId
 				};
 			}
 			else
