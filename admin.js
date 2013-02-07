@@ -49,9 +49,9 @@ var BaaSKitAdmin = (function () {
 	*/
     BaaSKitAdmin.prototype.createApplication = function (applicationName, callback) {
 
-    	var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
+    	var collection = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 
-		colleciton.findOne ({ 'name' : applicationName }, function (error, item) {
+		collection.findOne ({ 'name' : applicationName }, function (error, item) {
 
 			if (item == null)
 			{
@@ -62,7 +62,7 @@ var BaaSKitAdmin = (function () {
 					'clientKey' : libcrypto.randomBytes (12).toString ('hex')
 				};
 
-				colleciton.insert (app, function (error, object) {
+				collection.insert (app, function (error, object) {
 
 					if (!error)
 					{
@@ -86,10 +86,10 @@ var BaaSKitAdmin = (function () {
 	*/
     BaaSKitAdmin.prototype.deleteApplication = function (applicationId, callback) {
 
-    	var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
+    	var collection = BaaSKitDb.getInstance().getMainDb().collection ('applications');
     	var asksForUserConfirmation = this.asksForUserConfirmation;
 
-		colleciton.findOne ({ 'id' : applicationId }, function (error, item) {
+		collection.findOne ({ 'id' : applicationId }, function (error, item) {
 
 			if (item != null)
 			{
@@ -97,7 +97,7 @@ var BaaSKitAdmin = (function () {
 
 					if (ok)
 					{
-						colleciton.remove (item, function (error, num) {
+						collection.remove (item, function (error, num) {
 
 							if (!error)
 							{
@@ -139,9 +139,9 @@ var BaaSKitAdmin = (function () {
 	*/
     BaaSKitAdmin.prototype.listAllApplications = function (callback) {
 
-    	var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
+    	var collection = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 
-		colleciton.find ({}, {}, function (error, items) {
+		collection.find ({}, {}, function (error, items) {
 
 			items.toArray (function (error, items) {
 
@@ -162,9 +162,9 @@ var BaaSKitAdmin = (function () {
 	*/
     BaaSKitAdmin.prototype.getApplication = function (applicationId, callback) {
 
-    	var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
+    	var collection = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 
-		colleciton.findOne ({ 'id' : applicationId }, function (error, object) {
+		collection.findOne ({ 'id' : applicationId }, function (error, object) {
 
 			if (object != null)
 			{
@@ -182,10 +182,10 @@ var BaaSKitAdmin = (function () {
 	*/
     BaaSKitAdmin.prototype.generateApplicationClientKey = function (applicationId, callback) {
 
-		var colleciton = BaaSKitDb.getInstance().getMainDb().collection ('applications');
+		var collection = BaaSKitDb.getInstance().getMainDb().collection ('applications');
 		var asksForUserConfirmation = this.asksForUserConfirmation;
 		
-		colleciton.findOne ({ 'id' : applicationId }, function (error, item) {
+		collection.findOne ({ 'id' : applicationId }, function (error, item) {
 
 			if (item != null)
 			{
@@ -196,7 +196,7 @@ var BaaSKitAdmin = (function () {
 						var newClientKey = libcrypto.randomBytes (12).toString ('hex');
 						var operator = { $set : { 'clientKey' : newClientKey } };
 
-						colleciton.update (item, operator, function (error, result) {
+						collection.update (item, operator, function (error, result) {
 
 							if (!error)
 							{
