@@ -105,33 +105,25 @@ var BaaSKit = (function () {
 			if (libcommander.createapp && libcommander.createapp.length)
 			{
 				applications.createApplication (libcommander.createapp, function (error, newApplication) {
-
 					console.log (!error ? newApplication : error ['message']);
-					process.exit (error);
 				});
 			}
 			else if (libcommander.deleteapp && libcommander.deleteapp.length)
 			{
 				applications.deleteApplication (libcommander.deleteapp, function (error) {
-
 					console.log (!error ? "Application deleted successfully." : error ['message']);
-					process.exit (error);
 				});
 			}
 			else if (libcommander.listapps)
 			{
 				applications.listAllApplications (function (error, applicationList) {
-
 					console.log (!error ? applicationList : error ['message']);
-					process.exit (error);
 				});
 			}
 			else if (libcommander.generateclientkey && libcommander.generateclientkey.length)
 			{
 				applications.generateApplicationClientKey (libcommander.generateclientkey, function (error) {
-
 					console.log (!error ? "Application client key generated successfully." : error ['message']);
-					process.exit (error);
 				});
 			}
 			else

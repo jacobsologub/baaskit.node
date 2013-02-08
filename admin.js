@@ -66,16 +66,19 @@ var BaaSKitAdmin = (function () {
 
 					if (!error)
 					{
+						BaaSKitDb.getInstance().getMainDb().close();
 						callback (null, object[0]);
 					}
 					else
 					{
+						BaaSKitDb.getInstance().getMainDb().close();
 						callback ({ 'message' : 'An unknown error occurred.' } , null);
 					}
 				});
 			}
 			else
 			{
+				BaaSKitDb.getInstance().getMainDb().close();
 				callback ({ 'message' : 'An application with that name already exists.' } , null);
 			}
 		});
@@ -101,16 +104,19 @@ var BaaSKitAdmin = (function () {
 
 							if (!error)
 							{
+								BaaSKitDb.getInstance().getMainDb().close();
 								callback (null);
 							}
 							else
 							{
+								BaaSKitDb.getInstance().getMainDb().close();
 								callback ({ 'message' : 'An unknown error occurred.' });
 							}
 						});
 					}
 					else
 					{
+						BaaSKitDb.getInstance().getMainDb().close();
 						callback ({ 'message' : 'goodbye' } , null);
 					}
 				};
@@ -129,6 +135,7 @@ var BaaSKitAdmin = (function () {
 			}
 			else
 			{
+				BaaSKitDb.getInstance().getMainDb().close();
 				callback ({ 'message' : 'An application with that id does not exist.' });
 			}
 		});
@@ -147,10 +154,12 @@ var BaaSKitAdmin = (function () {
 
 				if (!error)
 				{
+					BaaSKitDb.getInstance().getMainDb().close();
 					callback (null, items);
 				}
 				else
 				{
+					BaaSKitDb.getInstance().getMainDb().close();
 					callback ({ 'message' : 'An unknown error occurred.' }, null);
 				}
 			});
@@ -168,10 +177,12 @@ var BaaSKitAdmin = (function () {
 
 			if (object != null)
 			{
+				BaaSKitDb.getInstance().getMainDb().close();
 				callback (null, object);
 			}
 			else
 			{
+				BaaSKitDb.getInstance().getMainDb().close();
 				callback ({ 'message' : 'An application with that id does not exist.' });
 			}
 		});
@@ -200,16 +211,19 @@ var BaaSKitAdmin = (function () {
 
 							if (!error)
 							{
+								BaaSKitDb.getInstance().getMainDb().close();
 								callback (null);
 							}
 							else
 							{
+								BaaSKitDb.getInstance().getMainDb().close();
 								callback ({ 'message' : 'An unknown error occurred.' });
 							}
 						});
 					}
 					else
 					{
+						BaaSKitDb.getInstance().getMainDb().close();
 						callback ({ 'message' : 'goodbye' });
 					}
 				};
@@ -228,6 +242,7 @@ var BaaSKitAdmin = (function () {
 			}
 			else
 			{
+				BaaSKitDb.getInstance().getMainDb().close();
 				callback ({ 'message' : 'An application with that id does not exist.' });
 			}
 		});
