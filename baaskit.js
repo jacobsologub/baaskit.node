@@ -24,9 +24,9 @@
   ==============================================================================
 */
 
-var libassert = require ('assert');
-var libexpress = require ('express');
-var libcommander = require ('commander');
+var assert = require ('assert');
+var express = require ('express');
+var commander = require ('commander');
 
 //==============================================================================
 /** BaaSKitServer class
@@ -40,12 +40,12 @@ var BaaSKitServer = (function () {
 	/** Creates a BaaSKitServer object. */
     function BaaSKitServer()
     {
-    	this.expressApp = libexpress();
+    	this.expressApp = express();
 
     	// (set settings for all environments)
 		this.expressApp.set ('title', 'baaskit');
 		this.expressApp.disable ('x-powered-by');
-		this.expressApp.use (libexpress.bodyParser());
+		this.expressApp.use (express.bodyParser());
 
 		// (applications routes)
 		var applications = require ('./routes/applications');
@@ -88,7 +88,7 @@ var BaaSKit = (function () {
     	var packageInfo = require ('./package');
     	var version = packageInfo ['version'];
 
-    	libcommander
+    	commander
 			.version (version)
 			.option ('-p, --port <port>', 'specify the port [3000]', Number, 3000)
 			.option ('-c, --createapp <application name>', 'create a new application')
@@ -97,32 +97,32 @@ var BaaSKit = (function () {
 			.option ('-g, --generateclientkey <application id>', 'generate a new application client key')
 			.parse (process.argv);
 
-		if (libcommander.createapp || libcommander.deleteapp || libcommander.listapps || libcommander.generateclientkey)
+		if (commander.createapp || commander.deleteapp || commander.listapps || commander.generateclientkey)
 		{
 			var admin = require ('./admin');
 			var applications = new admin.BaaSKitAdmin (true);
 
-			if (libcommander.createapp && libcommander.createapp.length)
+			if (commander.createapp && commander.createapp.length)
 			{
-				applications.createApplication (libcommander.createapp, function (error, newApplication) {
+				applications.createApplication (commander.createapp, function (error, newApplication) {
 					console.log (!error ? newApplication : error ['message']);
 				});
 			}
-			else if (libcommander.deleteapp && libcommander.deleteapp.length)
+			else if (commander.deleteapp && commander.deleteapp.length)
 			{
-				applications.deleteApplication (libcommander.deleteapp, function (error) {
+				applications.deleteApplication (commander.deleteapp, function (error) {
 					console.log (!error ? "Application deleted successfully." : error ['message']);
 				});
 			}
-			else if (libcommander.listapps)
+			else if (commander.listapps)
 			{
 				applications.listAllApplications (function (error, applicationList) {
 					console.log (!error ? applicationList : error ['message']);
 				});
 			}
-			else if (libcommander.generateclientkey && libcommander.generateclientkey.length)
+			else if (commander.generateclientkey && commander.generateclientkey.length)
 			{
-				applications.generateApplicationClientKey (libcommander.generateclientkey, function (error) {
+				applications.generateApplicationClientKey (commander.generateclientkey, function (error) {
 					console.log (!error ? "Application client key generated successfully." : error ['message']);
 				});
 			}
@@ -134,7 +134,7 @@ var BaaSKit = (function () {
 		else 
 		{
 			var server = new BaaSKitServer();
-			server.start (libcommander.port);
+			server.start (commander.port);
 		}
     }
 

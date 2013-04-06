@@ -24,8 +24,8 @@
   ==============================================================================
 */
 
-var libmongo = require ('mongodb');
-var BSON = libmongo.BSONPure;
+var mongodb = require ('mongodb');
+var BSON = mongodb.BSONPure;
 
 var BaaSKitDb = require ('../db').BaaSKitDb;
 

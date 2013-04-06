@@ -24,12 +24,12 @@
   ==============================================================================
 */
 
-var libassert = require ('assert');
-var libmongo = require ('mongodb');
+var assert = require ('assert');
+var mongodb = require ('mongodb');
 
 //==============================================================================
-var MongoServer = libmongo.Server;
-var MongoDatabase = libmongo.Db;
+var MongoServer = mongodb.Server;
+var MongoDatabase = mongodb.Db;
 
 //==============================================================================
 /** BaaSKitAppDbPool
@@ -101,7 +101,7 @@ var BaaSKitDb = (function () {
 
 		this.databaseConnection.open (function (error, databse) {
 			
-			libassert.equal (null, error, 'Could not connect to mongodb.');
+			assert.equal (null, error, 'Could not connect to mongodb.');
 		});
     }
 

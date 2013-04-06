@@ -24,10 +24,10 @@
   ==============================================================================
 */
 
-var libcrypto = require ('crypto');
-var libcommander = require ('commander');
-var libmongo = require ('mongodb');
-var BSON = libmongo.BSONPure;
+var crypto = require ('crypto');
+var commander = require ('commander');
+var mongodb = require ('mongodb');
+var BSON = mongodb.BSONPure;
 
 var BaaSKitDb = require ('./db').BaaSKitDb;
 
@@ -58,7 +58,7 @@ var BaaSKitAdmin = (function () {
 				var app = {
 					
 					'name' : applicationName,
-					'id' : libcrypto.randomBytes (12).toString ('hex'),
+					'id' : crypto.randomBytes (12).toString ('hex'),
 					'clientKey' : libcrypto.randomBytes (12).toString ('hex')
 				};
 
@@ -123,7 +123,7 @@ var BaaSKitAdmin = (function () {
 
 				if (asksForUserConfirmation)
 				{
-					libcommander.confirm ('Are you sure you want to delete this application? ', function (ok) {
+					commander.confirm ('Are you sure you want to delete this application? ', function (ok) {
 
 						confirmation (ok);
 						process.stdin.destroy();
@@ -231,7 +231,7 @@ var BaaSKitAdmin = (function () {
 
 				if (asksForUserConfirmation)
 				{
-					libcommander.confirm ('Are you sure you want to generate a new client key for this application? ', function (ok) {
+					commander.confirm ('Are you sure you want to generate a new client key for this application? ', function (ok) {
 
 						confirmation (ok);
 						process.stdin.destroy();
