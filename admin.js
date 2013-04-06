@@ -126,6 +126,7 @@ var BaaSKitAdmin = (function () {
 					libcommander.confirm ('Are you sure you want to delete this application? ', function (ok) {
 
 						confirmation (ok);
+						process.stdin.destroy();
 					});
 				}
 				else
@@ -233,6 +234,7 @@ var BaaSKitAdmin = (function () {
 					libcommander.confirm ('Are you sure you want to generate a new client key for this application? ', function (ok) {
 
 						confirmation (ok);
+						process.stdin.destroy();
 					});
 				}
 				else
